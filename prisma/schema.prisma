@@ -1,0 +1,149 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Ecoles {
+  id          String @id @default(cuid())
+  nom         String
+  description String
+  images      String @db.Text()
+  statut      String
+}
+
+model Enseignants {
+  id        String @id @default(cuid())
+  nom       String
+  prenom    String
+  postnom   String
+  email     String @unique
+  sexe      String
+  numero    String
+  mdp       String
+  date      String
+  id_classe String
+  statut    String
+
+  coursEnseignant Cours []
+  //classe   Classes  @relation(fields: [id_classe], references: [id])
+
+}
+
+model Cours {
+  id           String @id @default(cuid())
+  intitule     String
+  id_ensegnant String
+  statut       String
+  date         String
+  contenu      String @db.Text()
+
+  enseignant   Enseignants  @relation(fields: [id_ensegnant], references: [id])
+
+}
+
+model Quizs {
+  id            String @id @default(cuid())
+  titre         String
+  description   String
+  id_enseignant String
+  date          String
+  statut        String
+  question      String @db.Text()
+}
+
+model Parents {
+  id       String @id @default(cuid())
+  email    String
+  pwd      String
+  statut   String
+  id_eleve String
+  date     String
+}
+
+model Parent_eleves {
+  id            String @id @default(cuid())
+  id_enseignant String
+  id_eleve      String
+  date          String
+}
+
+model Eleves {
+  id        String @id @default(cuid())
+  nom       String
+  prenom    String
+  postnom   String
+  sexe      String
+  id_classe String
+  date      String
+
+}
+
+model Classes {
+  id       String @id @default(cuid())
+  nom      String
+  id_ecole String
+  date     String
+
+  //ensegnantClasse Enseignants []
+}
+
+model Annescolaires {
+  id        String @id @default(cuid())
+  datedebut String
+  datefin   String
+  statut    String
+}
+
+model Periodes {
+  id       String @id @default(cuid())
+  nom      String
+  id_ecole String
+  date     String
+}
+
+model Cours_perdiodes {
+  id         String @id @default(cuid())
+  id_periode String
+  id_classe  String
+  id_cours   String
+  id_point   String
+}
+
+model Points {
+  id         String @id @default(cuid())
+  id_periode String
+  id_eleve   String
+}
+
+model Communication_enseignant {
+  id            String @id @default(cuid())
+  id_enseignant String
+  id_parent     String
+  date          String
+  message       String
+}
+
+model Communication_ecole {
+  id        String @id @default(cuid())
+  id_ecole  String
+  id_parent String
+  date      String
+  message   String
+}
+
+model Meets {
+  id            String @id @default(cuid())
+  id_enseignant String
+  id_eleve      String
+  contenue      String
+}
